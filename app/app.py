@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import matplotlib.pyplot as plt
+import plotly.express as px
 from pathlib import Path
 
 # CONFIGURAÇÃO DA PÁGINA
@@ -78,25 +78,23 @@ if df is not None:
 
     with col5:
         st.subheader("Gráfico da Distribuição das Notas")
-        fig, ax = plt.subplots(figsize=(10, 5))
-        fig.patch.set_alpha(0.0)
-        ax.set_facecolor((0, 0, 0, 0))
-
-        bar_color = '#9eeca3'
-        text_color = '#d5d4c8'
-
-        score_counts.plot(kind='bar', ax=ax, color=bar_color, edgecolor=text_color)
-        ax.set_title("Contagem de Avaliações por Nota (1 a 5)", color=text_color)
-        ax.set_xlabel("Nota da Avaliação", color=text_color)
-        ax.set_ylabel("Quantidade de Avaliações", color=text_color)
-        ax.tick_params(axis='x', rotation=0, colors=text_color)
-        ax.tick_params(axis='y', colors=text_color)
-
-        for spine in ax.spines.values():
-            spine.set_edgecolor(text_color)
-
-        ax.bar_label(ax.containers[0], color=text_color)
-        st.pyplot(fig)
+        fig = px.bar(
+            score_counts,
+            x=score_counts.index,
+            y=score_counts.values,
+            title="Contagem de Avaliações por Nota (1 a 5)",
+            labels={'x': 'Nota da Avaliação', 'y': 'Quantidade de Avaliações'},
+            text_auto=True,
+            color_discrete_sequence=['#9eeca3']
+        )
+        fig.update_layout(
+            plot_bgcolor='rgba(0,0,0,0)',
+            paper_bgcolor='rgba(0,0,0,0)',
+            font_color='#d5d4c8',
+            xaxis_title_font_color='#d5d4c8',
+            yaxis_title_font_color='#d5d4c8'
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
 
 # SEÇÃO 2: CLASSIFICADOR INTERATIVO
